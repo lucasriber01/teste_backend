@@ -6,6 +6,8 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
@@ -18,8 +20,6 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-    private Instant startTime;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT-3")
     private Date dateInitial;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT-3")
@@ -46,9 +46,8 @@ public class Reservation {
 
     public Reservation(){}
 
-    public Reservation(Integer id, Instant startTime, Date dateInitial, Date dateFinal, User user, Land land) {
+    public Reservation(Integer id, Date dateInitial, Date dateFinal, User user, Land land) {
         this.id = id;
-        this.startTime = startTime;
         this.dateInitial = dateInitial;
         this.dateFinal = dateFinal;
         this.user = user;
@@ -63,13 +62,6 @@ public class Reservation {
         this.id = id;
     }
 
-    public Instant getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(Instant startTime) {
-        this.startTime = startTime;
-    }
 
     public Date getDateInitial() {
         return dateInitial;
@@ -119,6 +111,14 @@ public class Reservation {
         this.deletedAt = deletedAt;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     @PrePersist
     public void prePersist() {
         createdAt = Instant.now();
@@ -147,7 +147,6 @@ public class Reservation {
     public String toString() {
         return "Reservation{" +
                 "id=" + id +
-                ", startTime=" + startTime +
                 ", dateInitial=" + dateInitial +
                 ", dateFinal=" + dateFinal +
                 ", user=" + user +

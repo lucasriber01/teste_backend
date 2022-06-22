@@ -1,7 +1,6 @@
 package com.dhbrasil.projetoIntegrador.AlugaVerso.service;
 
 import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.LoginDTO;
-import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.RoleDTO;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.SessionDTO;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.model.Role;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.model.User;
@@ -15,9 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service

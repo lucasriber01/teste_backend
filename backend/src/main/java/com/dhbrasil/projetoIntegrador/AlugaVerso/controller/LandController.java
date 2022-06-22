@@ -2,12 +2,14 @@ package com.dhbrasil.projetoIntegrador.AlugaVerso.controller;
 
 import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.CategoryDTO;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.LandDTO;
+import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.LandResponseDTO;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.repository.LandRepository;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.service.LandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -95,9 +97,9 @@ public class LandController {
 
     // Filtro por cidade e intervalo de data
     @GetMapping(value = "/search")
-    public List<LandDTO> findByMetaverseAndReservationDates(@RequestParam("metaverseName") String metaverseName,
-                                                            @RequestParam("initialDate") Date initialDate,
-                                                            @RequestParam("endDate") Date endDate){
+    public List<LandResponseDTO> findByMetaverseAndReservationDates(@RequestParam("metaverseName") String metaverseName,
+                                                                    @RequestParam("initialDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date initialDate,
+                                                                    @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate){
         return landService.findByMetaverseAndReservationDates(metaverseName, initialDate, endDate);
     }
 }

@@ -66,7 +66,9 @@ public class UserController {
         userService.delete(id);
         return ResponseEntity.noContent().build();
     }
-   public ResponseEntity<List<UserDTO>> listLand(){
+
+    //Listar todas os usuários
+   public ResponseEntity<List<UserDTO>> listUsers(){
        List<UserDTO> list = userService.findAll();
        return ResponseEntity.ok().body(list);
    }

@@ -1,7 +1,6 @@
 package com.dhbrasil.projetoIntegrador.AlugaVerso.security;
 
-import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.RoleDTO;
-import com.dhbrasil.projetoIntegrador.AlugaVerso.model.Role;
+
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
@@ -18,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class JWTFilter extends OncePerRequestFilter {

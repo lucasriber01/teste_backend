@@ -2,6 +2,7 @@ package com.dhbrasil.projetoIntegrador.AlugaVerso.service;
 
 
 import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.LandDTO;
+import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.LandResponseDTO;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.model.Land;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.repository.CategoryRepository;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.repository.ImagesRepository;
@@ -13,9 +14,13 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -104,6 +109,7 @@ public class LandService {
                 .map(p -> new LandDTO(p))
                 .collect(Collectors.toList());
     }
+
     //Busca por categoria
     @Transactional(readOnly = true)
     public List<LandDTO> listByCategory(Integer idCategory) {
@@ -116,10 +122,13 @@ public class LandService {
 
     // Filtro por cidade e intervalo de data
     @Transactional(readOnly = true)
-    public List<LandDTO> findByMetaverseAndReservationDates(String metaverse, Date initialDate, Date endDate){
-        return landRepository.findByMetaverseAndReservationDates(metaverse, initialDate, endDate)
+    public List<LandResponseDTO> findByMetaverseAndReservationDates(String metaverse, Date dateInitial, Date endDate){
+
+
+
+        return landRepository.findByMetaverseAndReservationDates(metaverse, dateInitial, endDate)
                 .stream()
-                .map(land -> new LandDTO(land))
+                .map(land -> new LandResponseDTO(land))
                 .collect(Collectors.toList());
     }
 }

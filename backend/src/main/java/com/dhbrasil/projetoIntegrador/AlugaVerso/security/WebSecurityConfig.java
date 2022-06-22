@@ -33,17 +33,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private Environment env;
 
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        if (Arrays.asList(env.getActiveProfiles()).contains("test")) {
-//            http.headers().frameOptions().disable();
-//        }
-//
-//        http.cors().and().csrf().disable();
-//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//        http.authorizeRequests().anyRequest().permitAll();
-//    }
-
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
@@ -58,10 +47,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-   /* private static final String[] SWAGGER_WHITELIST = {
-            "/v2/api-docs",
-            "/swagger-resources"
-    };*/
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -69,10 +54,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .addFilterAfter(new JWTFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                //.antMatchers(SWAGGER_WHITELIST).permitAll()
                 .antMatchers("/h2-console/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/categories").permitAll()
-                .antMatchers(HttpMethod.GET, "/lands").permitAll()
+                .antMatchers("/reservation/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/categories/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/lands/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/metaverses").permitAll()
                 .antMatchers(HttpMethod.POST, "/users").permitAll()
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
@@ -89,8 +74,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/metaverses").hasAnyRole(ROLE_ADMIN)
                 .antMatchers(HttpMethod.PUT, "/metaverses").hasAnyRole(ROLE_ADMIN)
                 .antMatchers(HttpMethod.DELETE, "/metaverses").hasAnyRole(ROLE_ADMIN)
-                .antMatchers(HttpMethod.GET, "/users").hasAnyRole(ROLE_CLIENT) // aisjiajsiasj
-//                .antMatchers(HttpMethod.GET, "/users").permitAll()
+//                .antMatchers(HttpMethod.GET, "/users").hasAnyRole(ROLE_CLIENT) // aisjiajsiasj
+                .antMatchers(HttpMethod.GET, "/users").permitAll()
                 .anyRequest().authenticated().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 

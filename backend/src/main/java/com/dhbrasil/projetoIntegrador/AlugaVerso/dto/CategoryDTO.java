@@ -1,6 +1,8 @@
 package com.dhbrasil.projetoIntegrador.AlugaVerso.dto;
 
 import com.dhbrasil.projetoIntegrador.AlugaVerso.model.Category;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CategoryDTO {
 
@@ -8,6 +10,8 @@ public class CategoryDTO {
     private String name;
     private String imagemUrl;
     private String description;
+
+    private List<LandDTO> land = new ArrayList<>();
 
     public CategoryDTO(){}
 
@@ -19,8 +23,13 @@ public class CategoryDTO {
     }
 
     public Category toEntity(){
-
-        return new Category(this.id, this.name, this.imagemUrl, this.description);
+        Category category = new Category();
+        category.setId(this.id);
+        category.setName(this.name);
+        category.setImagemUrl(this.imagemUrl);
+        category.setDescription(this.description);
+        this.land.forEach(l ->category.getLand().add(l.toEntity()));
+        return category;
     }
 
     public CategoryDTO(Category category){
@@ -28,6 +37,7 @@ public class CategoryDTO {
         this.name = category.getName();
         this.imagemUrl = category.getImagemUrl();
         this.description = category.getDescription();
+        //category.getLand().forEach(l-> this.land.add(new LandDTO(l)));
     }
 
     public Integer getId() {
@@ -60,5 +70,13 @@ public class CategoryDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<LandDTO> getLand() {
+        return land;
+    }
+
+    public void setLand(List<LandDTO> land) {
+        this.land = land;
     }
 }

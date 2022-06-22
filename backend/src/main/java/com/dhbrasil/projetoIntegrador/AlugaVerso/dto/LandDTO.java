@@ -20,10 +20,11 @@ public class LandDTO {
     private List<AttributesDTO> attributes = new ArrayList<>();
     private CategoryDTO category;
     private MetaverseDTO metaverse;
-    private  List<ReservationDTO> reservation = new ArrayList<>();
+    private List<ReservationDTO> reservation = new ArrayList<>();
 
 
-    public LandDTO(){}
+    public LandDTO() {
+    }
 
     public LandDTO(Integer id, String name, String description, String localizationX, String localizationY) {
         this.id = id;
@@ -43,15 +44,15 @@ public class LandDTO {
         land.setLocalizationX(this.localizationX);
         land.setLocalizationY(this.localizationY);
         land.setPrice(this.price);
-        this.images.forEach(img ->land.getImages().add(img.toEntity()));
+        this.images.forEach(img -> land.getImages().add(img.toEntity()));
         this.attributes.forEach(attr -> land.getAttributes().add(attr.toEntity()));
-        this.reservation.forEach(res ->land.getReservation().add(res.toEntity()));
-        land.setCategory(this.category.toEntity());
-        land.setMetaverse(this.metaverse.toEntity());
+        this.reservation.forEach(res -> land.getReservation().add(res.toEntity()));
+        if (this.category != null) land.setCategory(this.category.toEntity());
+        if (this.metaverse != null) land.setMetaverse(this.metaverse.toEntity());
         return land;
     }
 
-    public LandDTO(Land land){
+    public LandDTO(Land land) {
         this.id = land.getId();
         this.name = land.getName();
         this.description = land.getDescription();

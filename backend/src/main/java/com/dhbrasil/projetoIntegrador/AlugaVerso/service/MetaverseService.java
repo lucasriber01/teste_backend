@@ -1,8 +1,6 @@
 package com.dhbrasil.projetoIntegrador.AlugaVerso.service;
 
-import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.CategoryDTO;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.MetaverseDTO;
-import com.dhbrasil.projetoIntegrador.AlugaVerso.model.Category;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.model.Metaverse;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.repository.MetaverseRepository;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.service.exceptions.DatabaseException;

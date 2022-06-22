@@ -1,8 +1,5 @@
 package com.dhbrasil.projetoIntegrador.AlugaVerso.security;
 
-import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.RoleDTO;
-import com.dhbrasil.projetoIntegrador.AlugaVerso.model.Role;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

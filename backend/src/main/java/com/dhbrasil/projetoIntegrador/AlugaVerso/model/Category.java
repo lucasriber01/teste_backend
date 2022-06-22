@@ -1,5 +1,6 @@
 package com.dhbrasil.projetoIntegrador.AlugaVerso.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 

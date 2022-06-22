@@ -2,33 +2,36 @@ package com.dhbrasil.projetoIntegrador.AlugaVerso.dto;
 
 import com.dhbrasil.projetoIntegrador.AlugaVerso.model.Reservation;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class ReservationDTO {
 
     private Integer id;
-    private Instant startTime;
+
     private Date dateInitial;
+
     private Date dateFinal;
     private UserDTO user;
-    private LandDTO land;
+    private LandResponseDTO land;
 
     public ReservationDTO(){}
 
     public ReservationDTO(Reservation reservation){
         id = reservation.getId();
-        startTime = reservation.getStartTime();
         dateInitial = reservation.getDateInitial();
         dateFinal = reservation.getDateFinal();
         user = new UserDTO(reservation.getUser());
-        //land = new LandDTO(reservation.getLand());
+        land = new LandResponseDTO(reservation.getLand());// este campo estava comentado por algum motivo
     }
 
     public Reservation toEntity(){
         Reservation reservation = new Reservation();
         reservation.setId(this.id);
-        reservation.setStartTime(this.startTime);
         reservation.setDateInitial(this.dateInitial);
         reservation.setDateFinal(this.dateFinal);
         reservation.setUser(this.user.toEntity());
@@ -42,14 +45,6 @@ public class ReservationDTO {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Instant getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(Instant startTime) {
-        this.startTime = startTime;
     }
 
     public Date getDateInitial() {
@@ -76,11 +71,11 @@ public class ReservationDTO {
         this.user = user;
     }
 
-    public LandDTO getLand() {
+    public LandResponseDTO getLand() {
         return land;
     }
 
-    public void setLand(LandDTO land) {
+    public void setLand(LandResponseDTO land) {
         this.land = land;
     }
 }

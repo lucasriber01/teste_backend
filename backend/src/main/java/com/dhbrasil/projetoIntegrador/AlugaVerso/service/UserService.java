@@ -100,7 +100,7 @@ public class UserService  implements UserDetailsService {
         }
     }
 
-    // Deletar terreno
+    // Deletar usuário
     @Transactional
     public void delete(Integer id){
         try{

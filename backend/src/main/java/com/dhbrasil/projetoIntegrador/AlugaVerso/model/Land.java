@@ -26,7 +26,7 @@ public class Land {
     @OneToMany(mappedBy = "land", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     Set<Images> images = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;
 
