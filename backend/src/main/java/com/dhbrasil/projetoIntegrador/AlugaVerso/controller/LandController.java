@@ -2,6 +2,7 @@ package com.dhbrasil.projetoIntegrador.AlugaVerso.controller;
 
 import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.CategoryDTO;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.LandDTO;
+import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.LandListDTO;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.LandResponseDTO;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.repository.LandRepository;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.service.LandService;
@@ -64,8 +65,8 @@ public class LandController {
 
     //Busca por id
     @GetMapping(value = "/{id}")
-    public ResponseEntity<LandDTO> searchLandId(@PathVariable Integer id){
-        LandDTO landDTO = landService.findById(id);
+    public ResponseEntity<LandListDTO> searchLandId(@PathVariable Integer id){
+        LandListDTO landDTO = landService.findById(id);
         return ResponseEntity.ok().body(landDTO);
     }
 
@@ -101,6 +102,13 @@ public class LandController {
                                                                     @RequestParam("initialDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date initialDate,
                                                                     @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate){
         return landService.findByMetaverseAndReservationDates(metaverseName, initialDate, endDate);
+    }
+
+    // Filtro intervalo de data
+    @GetMapping(value = "/search/dates")
+    public List<LandResponseDTO> findByReservationDates(@RequestParam("initialDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date initialDate,
+                                                        @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate){
+        return landService.findByReservationDates(initialDate, endDate);
     }
 }
 

@@ -4,27 +4,25 @@ package com.dhbrasil.projetoIntegrador.AlugaVerso.service;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.*;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.model.Land;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.model.Reservation;
-import com.dhbrasil.projetoIntegrador.AlugaVerso.model.Role;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.model.User;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.repository.*;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.service.exceptions.DatabaseException;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.service.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.persistence.EntityNotFoundException;
 import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
@@ -43,17 +41,16 @@ public class ReservationService {
     public Integer createReservation(ReservationDTO reservationDTO) {
 //
         //Buscar usuário
-        Optional<User> userEntity = userRepository.findById(reservationDTO.getUser().getId());
-        User user = userEntity.orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+        UserDTO loggedUser = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        User userEntity = userRepository.findById(loggedUser.getId()).orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
 
         //Buscar terrenp
         Optional<Land> landEntity = landRepository.findById(reservationDTO.getLand().getId());
         Land land = landEntity.orElseThrow(() -> new ResourceNotFoundException("Terreno não encontrado"));
 
         //Efetuar a reserva
-
         Reservation newReservation = reservationDTO.toEntity();
-        newReservation.setUser(user);
+        newReservation.setUser(userEntity);
         newReservation.setLand(land);
 
         newReservation = reservationRepository.save(newReservation);
@@ -104,9 +101,20 @@ public class ReservationService {
     //Atualizar reserva
     @Transactional
     public ReservationDTO update(ReservationDTO dto) {
+        UserDTO loggedUser = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        User userEntity = userRepository.getReferenceById(loggedUser.getId());
+
+
+        Boolean isAdmin = userEntity.getRoles().stream().filter(r->r.getName().equals("ADMIN")).count() >0;
+
+
+
         Reservation currentReservation = reservationRepository.findById(dto.getId())
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
 
+        if(!isAdmin && currentReservation.getUser().getId() != userEntity.getId()){
+            throw new ResponseStatusException(FORBIDDEN);
+        }
         currentReservation.setDateInitial(dto.getDateInitial());
         currentReservation.setDateFinal(dto.getDateFinal());
         currentReservation.setLand(dto.getLand().toEntity());
@@ -115,6 +123,8 @@ public class ReservationService {
         Reservation updateReservation = reservationRepository.save(currentReservation);
         return new ReservationDTO(updateReservation);
     }
+
+
 
 
     //Filtrar reservas por id de usuário

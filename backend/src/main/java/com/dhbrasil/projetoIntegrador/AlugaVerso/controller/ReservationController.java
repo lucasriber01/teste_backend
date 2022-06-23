@@ -2,15 +2,18 @@ package com.dhbrasil.projetoIntegrador.AlugaVerso.controller;
 
 import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.LandDTO;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.ReservationDTO;
+import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.UserDTO;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.repository.LandRepository;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.repository.ReservationRepository;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.service.LandService;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.service.ReservationService;
+import com.dhbrasil.projetoIntegrador.AlugaVerso.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -29,8 +32,11 @@ public class ReservationController {
     private ReservationRepository reservationRepository;
 
     //Cadastrar reserva
-    @PostMapping
+    @PostMapping(value = "/me")
     public ResponseEntity<ReservationDTO> createdReservation( @RequestBody ReservationDTO dto) {
+
+
+
         Integer id  = reservationService.createReservation(dto);
         ReservationDTO reservationDTO = new ReservationDTO(reservationRepository.findById(id).get());
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -67,6 +73,15 @@ public class ReservationController {
         return ResponseEntity.ok().body(reservationDTO);
     }
 
+    // Busca de reserva por usuário logado
+    @GetMapping(value = "/me")
+    public ResponseEntity<ReservationDTO> searchReservationByLoggedUserId(){
+        UserDTO loggedUser = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getDetails();
+
+        ReservationDTO reservationDTO = reservationService.findById(loggedUser.getId());
+        return ResponseEntity.ok().body(reservationDTO);
+    }
+
     //Deletar reserva
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id){
@@ -74,9 +89,17 @@ public class ReservationController {
         return ResponseEntity.noContent().build();
     }
 
+    //Deletar reserva com o usuário logado
+    @DeleteMapping(value = "/me")
+    public ResponseEntity<Void> delete(){
+        UserDTO loggedUser = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        reservationService.delete(loggedUser.getId());
+        return ResponseEntity.noContent().build();
+    }
+
     //Atualizar reserva
     @PutMapping(value = "/{id}")
-    public ResponseEntity<ReservationDTO> updateLand( @PathVariable Integer id, @Valid @RequestBody ReservationDTO dto) {
+    public ResponseEntity<ReservationDTO> updateReservation( @PathVariable Integer id, @Valid @RequestBody ReservationDTO dto) {
         dto.setId(id);
         ReservationDTO obj = reservationService.update(dto);
         return ResponseEntity.ok().body(obj);
@@ -86,6 +109,14 @@ public class ReservationController {
     @GetMapping(value = "/filter/user")
     public List<ReservationDTO> findyAllUser(@RequestParam Integer idUser){
         return reservationService.findyAllUser(idUser);
+    }
+
+    //Filtrar reservas por id de usuário logado
+    @GetMapping(value = "/filter/me")
+    public List<ReservationDTO> findyAllUserLogado(){
+        UserDTO loggedUser = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getDetails();
+
+        return reservationService.findyAllUser(loggedUser.getId());
     }
 
     // Filtro de reservas por id de terreno

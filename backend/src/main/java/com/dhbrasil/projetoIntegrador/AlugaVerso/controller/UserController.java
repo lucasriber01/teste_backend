@@ -7,6 +7,7 @@ import com.dhbrasil.projetoIntegrador.AlugaVerso.repository.UserRepository;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -27,29 +28,36 @@ public class UserController {
     //Cadastrar usuário
     @PostMapping
     public ResponseEntity<UserDTO> createdUser(@RequestBody @Valid UserInsertDTO userInsertDTO){
-        //Integer id = userService.insert(dto);
-        //UserDTO userDTO = new UserDTO(userRepository.findById(id).get());
+
         UserDTO newDto = userService.insert(userInsertDTO);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(newDto.getId()).toUri();
         return ResponseEntity.created(uri).body(newDto);
 
-//        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-//                .buildAndExpand(dto.getId()).toUri();
-//        return ResponseEntity.created(uri).body(userDTO);
+
     }
 
     //Listar todas os usuários
     @GetMapping
-   public ResponseEntity<List<UserDTO>> listUser(){
-       List<UserDTO> list = userService.findAll();
-       return ResponseEntity.ok().body(list);
-   }
+    public ResponseEntity<List<UserDTO>> listUser(){
+        List<UserDTO> list = userService.findAll();
+        return ResponseEntity.ok().body(list);
+    }
 
     //Busca por id
     @GetMapping(value = "/{id}")
     public ResponseEntity<UserDTO> findById(@PathVariable Integer id){
         UserDTO userDTO = userService.findById(id);
+        return ResponseEntity.ok().body(userDTO);
+    }
+
+
+    //Busca user logado
+    @GetMapping(value = "/me")
+    public ResponseEntity<UserDTO> findByLoggedUserId(){
+        UserDTO loggedUser = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getDetails();
+
+        UserDTO userDTO = userService.findById(loggedUser.getId());
         return ResponseEntity.ok().body(userDTO);
     }
 
@@ -60,6 +68,15 @@ public class UserController {
         return ResponseEntity.ok().body(newDto);
     }
 
+    //Atualizar user loggado
+    @PutMapping(value = "/me")
+    public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserUpdateDTO dto){
+        UserDTO loggedUser = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getDetails();
+
+        UserDTO newDto = userService.update(loggedUser.getId(), dto);
+        return ResponseEntity.ok().body(newDto);
+    }
+
     //Deletar user
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<UserDTO> delete(@PathVariable Integer id){
@@ -67,9 +84,4 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    //Listar todas os usuários
-   public ResponseEntity<List<UserDTO>> listUsers(){
-       List<UserDTO> list = userService.findAll();
-       return ResponseEntity.ok().body(list);
-   }
 }

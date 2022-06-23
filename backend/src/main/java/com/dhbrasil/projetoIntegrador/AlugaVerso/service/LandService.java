@@ -2,6 +2,7 @@ package com.dhbrasil.projetoIntegrador.AlugaVerso.service;
 
 
 import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.LandDTO;
+import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.LandListDTO;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.LandResponseDTO;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.model.Land;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.repository.CategoryRepository;
@@ -63,10 +64,10 @@ public class LandService {
 
     //Busca por id
     @Transactional(readOnly = true)
-    public LandDTO findById(Integer id){
+    public LandListDTO findById(Integer id){
         Optional<Land> landObj = landRepository.findById(id);
         Land land = landObj.orElseThrow(()-> new ResponseStatusException(NOT_FOUND));
-        return new LandDTO(land);
+        return new LandListDTO(land);
     }
 
     //Deletar terreno
@@ -131,4 +132,17 @@ public class LandService {
                 .map(land -> new LandResponseDTO(land))
                 .collect(Collectors.toList());
     }
+
+    // Filtro por  intervalo de data
+    @Transactional(readOnly = true)
+    public List<LandResponseDTO> findByReservationDates(Date dateInitial, Date endDate){
+
+
+
+        return landRepository.findByReservationDates(dateInitial, endDate)
+                .stream()
+                .map(land -> new LandResponseDTO(land))
+                .collect(Collectors.toList());
+    }
+
 }

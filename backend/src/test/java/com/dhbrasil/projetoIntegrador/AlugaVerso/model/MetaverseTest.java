@@ -15,7 +15,7 @@ public class MetaverseTest {
 	
 	@Test
 	public void MetaverseInstance2() {
-//		Metaverse obj = new Metaverse(1,"Metaverse2");
+		Metaverse obj = new Metaverse(1,"Metaverse2", "test.jpg");
 
 	}
 

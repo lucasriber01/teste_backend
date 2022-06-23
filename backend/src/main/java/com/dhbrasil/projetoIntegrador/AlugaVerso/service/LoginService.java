@@ -2,6 +2,7 @@ package com.dhbrasil.projetoIntegrador.AlugaVerso.service;
 
 import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.LoginDTO;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.SessionDTO;
+import com.dhbrasil.projetoIntegrador.AlugaVerso.dto.UserDTO;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.model.Role;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.model.User;
 import com.dhbrasil.projetoIntegrador.AlugaVerso.repository.UserRepository;
@@ -42,6 +43,7 @@ public class LoginService {
             jwtObject.setIssuedAt(new Date(System.currentTimeMillis()));
             jwtObject.setExpiration((new Date(System.currentTimeMillis() + SecurityConfig.EXPIRATION)));
             jwtObject.setRoles(user.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
+            jwtObject.setUser(new UserDTO(user));
             session.setToken(JWTCreator.create(SecurityConfig.PREFIX, SecurityConfig.KEY, jwtObject));
             return session;
         }else {

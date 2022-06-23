@@ -55,27 +55,39 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterAfter(new JWTFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/h2-console/**").permitAll()
-                .antMatchers("/reservation/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/categories/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/lands/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/metaverses").permitAll()
-                .antMatchers(HttpMethod.POST, "/users").permitAll()
+                .antMatchers(HttpMethod.GET, "/categories/**").permitAll() //ok
+                .antMatchers(HttpMethod.GET, "/lands/**").permitAll() //ok
+                .antMatchers(HttpMethod.GET, "/metaverses").permitAll() //ok
+                .antMatchers(HttpMethod.POST, "/users").permitAll() //ok
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
+                // User
+                .antMatchers(HttpMethod.GET, "/users/{id}").hasAnyRole(ROLE_ADMIN)
+                .antMatchers(HttpMethod.GET, "/users").hasAnyRole(ROLE_ADMIN)
+                .antMatchers(HttpMethod.GET, "/users/me").hasAnyRole(ROLE_CLIENT, ROLE_ADMIN)
+                .antMatchers(HttpMethod.PUT, "/users/{id}").hasAnyRole(ROLE_ADMIN)
+                .antMatchers(HttpMethod.PUT, "/users/me").hasAnyRole(ROLE_CLIENT, ROLE_ADMIN)
+                .antMatchers(HttpMethod.DELETE, "/users/{id}").hasAnyRole(ROLE_ADMIN)
+                //Reservation
+                .antMatchers(HttpMethod.GET, "/reservation").hasAnyRole(ROLE_ADMIN)
+                .antMatchers(HttpMethod.GET, "/reservation/{id}").hasAnyRole(ROLE_ADMIN)
+                .antMatchers(HttpMethod.GET, "/reservation/me").hasAnyRole(ROLE_CLIENT, ROLE_ADMIN)
+                .antMatchers(HttpMethod.GET, "/reservation/filter/user").hasAnyRole(ROLE_ADMIN)
+                .antMatchers(HttpMethod.GET, "/reservation/filter/me").hasAnyRole(ROLE_CLIENT,ROLE_ADMIN)
+                .antMatchers(HttpMethod.GET, "/reservation/filter/lands").hasAnyRole(ROLE_ADMIN)
+                .antMatchers(HttpMethod.DELETE, "/reservation/me").hasAnyRole(ROLE_CLIENT, ROLE_ADMIN)
+                .antMatchers(HttpMethod.DELETE, "/reservation/{id}").hasAnyRole(ROLE_ADMIN)
+                .antMatchers(HttpMethod.PUT, "/reservation/{id}").hasAnyRole(ROLE_ADMIN)
+                .antMatchers(HttpMethod.PUT, "/reservation/me").hasAnyRole(ROLE_CLIENT, ROLE_ADMIN)
+                .antMatchers(HttpMethod.POST, "/reservation/me").hasAnyRole(ROLE_CLIENT, ROLE_ADMIN)
+                // Categories
+                .antMatchers("/categories").hasRole(ROLE_ADMIN) //ok
+//
+                // Lands
+                .antMatchers("/lands").hasRole(ROLE_ADMIN)
 
-                .antMatchers(HttpMethod.POST, "/users/{id}").hasAnyRole(ROLE_CLIENT, ROLE_ADMIN) //verficar
-                .antMatchers(HttpMethod.PUT, "/users/{id}").hasAnyRole(ROLE_CLIENT, ROLE_ADMIN) // verificar
-                .antMatchers(HttpMethod.DELETE, "/users/{id}").hasAnyRole(ROLE_CLIENT, ROLE_ADMIN) //verificar
-                .antMatchers(HttpMethod.POST, "/categories").hasAnyRole(ROLE_ADMIN)
-                .antMatchers(HttpMethod.PUT, "/categories").hasAnyRole(ROLE_ADMIN)
-                .antMatchers(HttpMethod.DELETE, "/categories").hasAnyRole(ROLE_ADMIN)
-                .antMatchers(HttpMethod.POST, "/lands").hasAnyRole(ROLE_ADMIN)
-                .antMatchers(HttpMethod.PUT, "/lands").hasAnyRole(ROLE_ADMIN)
-                .antMatchers(HttpMethod.DELETE, "/lands").hasAnyRole(ROLE_ADMIN)
-                .antMatchers(HttpMethod.POST, "/metaverses").hasAnyRole(ROLE_ADMIN)
-                .antMatchers(HttpMethod.PUT, "/metaverses").hasAnyRole(ROLE_ADMIN)
-                .antMatchers(HttpMethod.DELETE, "/metaverses").hasAnyRole(ROLE_ADMIN)
-//                .antMatchers(HttpMethod.GET, "/users").hasAnyRole(ROLE_CLIENT) // aisjiajsiasj
-                .antMatchers(HttpMethod.GET, "/users").permitAll()
+                // Metaverses
+                .antMatchers("/metaverses").hasRole(ROLE_ADMIN) //ok
+
                 .anyRequest().authenticated().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
@@ -87,5 +99,3 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 }
-
-// a234@gmail.com // almocogratis
