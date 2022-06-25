@@ -27,6 +27,11 @@ import java.util.Arrays;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private static final String[] PUBLIC = { "/h2-console/**" };
+    private static final String[] OPERATOR_GET = { "/categories", "/lands/**",  "/metaverses", "/lands/search/metaverse", "/lands/search/category", "/lands/search/**"};
+    private static final String[] OPERATOR_GET_RESERVATION = { "/reservation", "/reservation/{id}"};
+    private static final String[] OPERATOR_POST = { "/users", "/login"};
+    private static final String[] OPERATOR_DELETE = { "/users/{id}", "/reservation/{id}"};
     private static final String ROLE_CLIENT = "CLIENT";
     private static final String ROLE_ADMIN = "ADMIN";
 
@@ -47,46 +52,42 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.headers().frameOptions().disable();
         http.cors().and().csrf().disable()
                 .addFilterAfter(new JWTFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/h2-console/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/categories/**").permitAll() //ok
-                .antMatchers(HttpMethod.GET, "/lands/**").permitAll() //ok
-                .antMatchers(HttpMethod.GET, "/metaverses").permitAll() //ok
-                .antMatchers(HttpMethod.POST, "/users").permitAll() //ok
-                .antMatchers(HttpMethod.POST, "/login").permitAll()
+                .antMatchers(PUBLIC).permitAll()
+                .antMatchers(HttpMethod.GET, OPERATOR_GET).permitAll() //ok
+                .antMatchers(HttpMethod.POST, OPERATOR_POST).permitAll() //ok
+                .antMatchers(HttpMethod.DELETE, "/reservation/me").hasAnyRole(ROLE_CLIENT, ROLE_ADMIN)
+                .antMatchers(HttpMethod.DELETE, OPERATOR_DELETE).hasAnyRole(ROLE_ADMIN) //ok
                 // User
-                .antMatchers(HttpMethod.GET, "/users/{id}").hasAnyRole(ROLE_ADMIN)
                 .antMatchers(HttpMethod.GET, "/users").hasAnyRole(ROLE_ADMIN)
                 .antMatchers(HttpMethod.GET, "/users/me").hasAnyRole(ROLE_CLIENT, ROLE_ADMIN)
-                .antMatchers(HttpMethod.PUT, "/users/{id}").hasAnyRole(ROLE_ADMIN)
+                .antMatchers(HttpMethod.GET, "/users/{id}").hasAnyRole(ROLE_ADMIN)
                 .antMatchers(HttpMethod.PUT, "/users/me").hasAnyRole(ROLE_CLIENT, ROLE_ADMIN)
-                .antMatchers(HttpMethod.DELETE, "/users/{id}").hasAnyRole(ROLE_ADMIN)
+                .antMatchers(HttpMethod.PUT, "/users/{id}").hasAnyRole(ROLE_ADMIN)
+
                 //Reservation
-                .antMatchers(HttpMethod.GET, "/reservation").hasAnyRole(ROLE_ADMIN)
-                .antMatchers(HttpMethod.GET, "/reservation/{id}").hasAnyRole(ROLE_ADMIN)
+                .antMatchers(HttpMethod.GET, OPERATOR_GET_RESERVATION).hasAnyRole(ROLE_ADMIN)//
                 .antMatchers(HttpMethod.GET, "/reservation/me").hasAnyRole(ROLE_CLIENT, ROLE_ADMIN)
                 .antMatchers(HttpMethod.GET, "/reservation/filter/user").hasAnyRole(ROLE_ADMIN)
                 .antMatchers(HttpMethod.GET, "/reservation/filter/me").hasAnyRole(ROLE_CLIENT,ROLE_ADMIN)
                 .antMatchers(HttpMethod.GET, "/reservation/filter/lands").hasAnyRole(ROLE_ADMIN)
-                .antMatchers(HttpMethod.DELETE, "/reservation/me").hasAnyRole(ROLE_CLIENT, ROLE_ADMIN)
-                .antMatchers(HttpMethod.DELETE, "/reservation/{id}").hasAnyRole(ROLE_ADMIN)
-                .antMatchers(HttpMethod.PUT, "/reservation/{id}").hasAnyRole(ROLE_ADMIN)
                 .antMatchers(HttpMethod.PUT, "/reservation/me").hasAnyRole(ROLE_CLIENT, ROLE_ADMIN)
+                .antMatchers(HttpMethod.PUT, "/reservation/{id}").hasAnyRole(ROLE_ADMIN)
                 .antMatchers(HttpMethod.POST, "/reservation/me").hasAnyRole(ROLE_CLIENT, ROLE_ADMIN)
+
                 // Categories
-                .antMatchers("/categories").hasRole(ROLE_ADMIN) //ok
+                .antMatchers("/categories/**").hasAnyRole(ROLE_ADMIN) //ok
 //
                 // Lands
-                .antMatchers("/lands").hasRole(ROLE_ADMIN)
+                .antMatchers("/lands/**").hasAnyRole(ROLE_ADMIN)// ok
 
                 // Metaverses
-                .antMatchers("/metaverses").hasRole(ROLE_ADMIN) //ok
+                .antMatchers("/metaverses").hasAnyRole(ROLE_ADMIN) //ok
 
                 .anyRequest().authenticated().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
