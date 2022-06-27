@@ -28,7 +28,7 @@ import java.util.Arrays;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String[] PUBLIC = { "/h2-console/**" };
-    private static final String[] OPERATOR_GET = { "/categories", "/lands/**",  "/metaverses", "/lands/search/metaverse", "/lands/search/category", "/lands/search/**"};
+    private static final String[] OPERATOR_GET = { "/hello", "/categories", "/lands/**",  "/metaverses", "/lands/search/metaverse", "/lands/search/category", "/lands/search/**"};
     private static final String[] OPERATOR_GET_RESERVATION = { "/reservation", "/reservation/{id}"};
     private static final String[] OPERATOR_POST = { "/users", "/login"};
     private static final String[] OPERATOR_DELETE = { "/users/{id}", "/reservation/{id}"};
